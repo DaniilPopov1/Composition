@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
 
@@ -41,6 +42,42 @@ class GameFinishedFragment:Fragment() {
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
+        bindViews()
+    }
+
+    private fun bindViews(){
+        binding.emojiResult.setImageResource(getSmileResId())
+        binding.tvRequiredAnswers.text = String.format(
+            getString(R.string.required_score),
+            gameResult.gameSettings.minCountOfRightAnswers.toString()
+        )
+        binding.tvScoreAnswers.text = String.format(
+            getString(R.string.score_answers),
+            gameResult.countOfRightAnswers.toString()
+        )
+        binding.tvRequiredPercentage.text = String.format(
+            getString(R.string.required_percentage),
+            gameResult.gameSettings.minPercentOfRightAnswers.toString()
+        )
+        binding.tvScorePercentage.text = String.format(
+            getString(R.string.score_percentage),
+            getPercentOfRightAnswer().toString()
+        )
+    }
+
+    private fun getSmileResId(): Int{
+        return if (gameResult.winner){
+            R.drawable.ic_smile
+        } else {
+            R.drawable.ic_sad
+        }
+    }
+
+    private fun getPercentOfRightAnswer(): Int {
+        if (gameResult.countOfQuestion == 0){
+            return 0
+        }
+        return (gameResult.countOfRightAnswers / gameResult.countOfQuestion.toDouble() * 100).toInt()
     }
 
     override fun onDestroyView() {
