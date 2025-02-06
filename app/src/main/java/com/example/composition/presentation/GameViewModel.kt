@@ -16,6 +16,8 @@ import com.example.composition.domain.usecases.GetGameSettingsUseCase
 
 class GameViewModel(application: Application): AndroidViewModel(application) {
 
+
+
     private val context = application
 
     private val repository = GameRepositoryImpl
@@ -70,6 +72,7 @@ class GameViewModel(application: Application): AndroidViewModel(application) {
         getGameSettings(level)
         startTimer()
         generateQuestion()
+        updateProgress()
     }
 
     private fun startTimer(){
@@ -108,7 +111,7 @@ class GameViewModel(application: Application): AndroidViewModel(application) {
         super.onCleared()
         timer?.cancel()
     }
-
+    
     private fun getGameSettings(level: Level){
         this.level = level
         this.gameSettings = getGameSettingsUseCase(level)
@@ -146,6 +149,9 @@ class GameViewModel(application: Application): AndroidViewModel(application) {
     }
 
     private fun calculatePercentOfRightAnswers():Int{
+        if (countOfQuestions == 0){
+            return 0
+        }
         return (countOfRightAnswers / countOfQuestions.toDouble() * 100).toInt()
     }
 
